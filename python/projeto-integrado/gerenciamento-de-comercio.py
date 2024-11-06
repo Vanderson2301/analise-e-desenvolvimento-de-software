@@ -140,14 +140,24 @@ def alterar_produto():
             tentativas +=1
             if tentativas < limite_de_tentativas:
                 print("\nDesculpe, o numero que você escolheu não é correspondente a nenhum produto, tente novamente.")    
+def relatorio():
+    cursor.execute("SELECT * FROM sistema WHERE estoque < 3")
+    estoque_baixo = cursor.fetchall()
+    if estoque_baixo:
+        print("Produtos com estoque abaixo de 3 unidades:")
+        for produtos in estoque_baixo:
+            print(produtos)
+    else:
+        print("Não há produtos com estoque abaixo de 3 unidades.")
 def voltar_menu():
     while True:
         print(f"\n1 - Ver Todos os Produtos Cadastrados.")
         print(f"2 - Cadastrar Novo Produto.")
         print(f"3 - Alterar Produto Cadastrado.")
         print(f"4 - Excluir Produto Cadastrado.")
-        print(f"5 - Sair.")
-        menu = int(input("\nEscolha de 1 a 5 para prosseguir. "))
+        print(f"5 - Relatório de Baixo Estoque.")
+        print(f"6 - Sair.")
+        menu = int(input("\nEscolha de 1 a 6 para prosseguir. "))
     
         if menu == 1:
             consultar_produto()
@@ -176,6 +186,8 @@ def voltar_menu():
                         print("\nDesculpe, você tentou muitas vezes, o sistema voltará ao menu.")
                         voltar_menu()
         elif menu == 5:
+            relatorio()
+        elif menu == 6:
             print(f"Até mais, te vejo outra hora!")
             break
         else:
