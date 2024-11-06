@@ -29,6 +29,7 @@ def consultar_produto():
         else:
             print("Desculpe, o numero que você escolheu não é correspondente a nenhuma opção, tente novamente. ")
     else:
+        print("Aqui estão todos os produtos cadastrados.")
         for produtos in sistema:
             print(produtos) 
 def cadastrar_produto():
@@ -66,9 +67,79 @@ def cadastrar_produto():
         conn.commit()
         print("Produto Cadastrado com Sucesso!")
         voltar_menu()
-
 def alterar_produto():
-    print("aaa")
+    tentativas = 0
+    limite_de_tentativas = 3
+    while tentativas < limite_de_tentativas:
+        consultar_produto()
+        escolher_produto = input("Qual o número do produto que você deseja alterar? ")
+        cursor.execute("SELECT 1 FROM sistema WHERE id = ?", (escolher_produto,))
+        resultado = cursor.fetchone()
+        if resultado:
+            while True:
+                print("1 - Nome.")
+                print("2 - Categoria.")
+                print("3 - Estoque.")
+                print("4 - Valor.")
+                print("5 - Local.")
+                escolher_alteracao = int(input("Qual o número do que você deseja alterar no produto? "))
+                if escolher_alteracao == 1:
+                    nome2 = input("Qual o nome que você deseja colocar? ")
+                    cursor.execute("UPDATE sistema SET nome = ? WHERE id = ?",(nome2, escolher_produto))
+                    conn.commit()
+                    print("Nome Alterado com Sucesso!")
+                    voltar_menu()
+                elif escolher_alteracao == 2:
+                    categoria2 = input("Qual a categoria do produto? ")
+                    cursor.execute("UPDATE sistema SET categoria = ? WHERE id = ?",(categoria2, escolher_produto))
+                    conn.commit()
+                    print("\nCategoria Alterada com Sucesso!")
+                    voltar_menu()
+                elif escolher_alteracao == 3:
+                    estoque2 = int(input("Qual a quantidade? "))
+                    cursor.execute("UPDATE sistema SET estoque = ? WHERE id = ?",(estoque2, escolher_produto))
+                    conn.commit()
+                    print("\nEstoque Alterado com Sucesso!")
+                    voltar_menu()
+                elif escolher_alteracao == 4:
+                    valor2 = float(input("Qual o valor? "))
+                    cursor.execute("UPDATE sistema SET valor = ? WHERE id = ?",(estoque2, escolher_produto))
+                    conn.commit()
+                    print("\nValor Alterado com Sucesso!")
+                    voltar_menu()
+                elif escolher_alteracao == 5:
+                    while tentativas < limite_de_tentativas:
+                        print(f"Em qual local vai ficar o produto?")
+                        print(f"1 - Ele está na Gaveta A")
+                        print(f"2 - Ele está na Gaveta B")
+                        print(f"3 - Ele está na Gaveta C")
+                        print(f"4 - Ele está na Gaveta D")
+                        escolha_local = int(input("Digite o numero do local que o produto irá ficar. "))            
+                        if escolha_local == 1:
+                            local2 = "Gaveta A"
+                        elif escolha_local == 2:
+                            local2 = "Gaveta B"
+                        elif escolha_local == 3:
+                            local2 = "Gaveta C"
+                        elif escolha_local == 4:
+                            local2 = "Gaveta D"
+                        else:
+                            tentativas += 1
+                            if tentativas < limite_de_tentativas:
+                                print("Desculpe, o numero que você escolheu não é correspondente a nenhum local.")
+                            else:
+                                print("Desculpa, você errou muitas vezes, o sistema retornará ao menu.")
+                    cursor.execute("UPDATE sistema SET local = ? WHERE id = ?",(local2, escolher_produto))
+                    conn.commit()
+                    print("\nLocal Alterado com Sucesso!")
+                    voltar_menu()
+                else:
+                    print("\nDesculpe, o numero que você escolheu não é correspondente a nenhuma opção, tente novamente.")   
+
+        else:
+            tentativas +=1
+            if tentativas < limite_de_tentativas:
+                print("\nDesculpe, o numero que você escolheu não é correspondente a nenhum produto, tente novamente.")    
 def voltar_menu():
     while True:
         print(f"\n1 - Ver Todos os Produtos Cadastrados.")
@@ -80,14 +151,10 @@ def voltar_menu():
     
         if menu == 1:
             consultar_produto()
-
         elif menu == 2:
             cadastrar_produto()
-
         elif menu == 3:
-            consultar_produto()
-            ("\n Qual produto você deseja alterar? ")
-
+            alterar_produto()
         elif menu == 4:
             consultar_produto()
             tentativas = 0
